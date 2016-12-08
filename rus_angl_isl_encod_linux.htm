@@ -1,0 +1,233 @@
+<html>
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="description" content="Как использовать русскую, английскую и исландскую кодировку в консоли Linux.">
+<meta name="keywords" content="Linux, console, cyrillization, Линукс, кириллизация консоли, русификация консоли, исландский в Линуксе, исландский в Linux">
+<title>Использование рус., англ. и исл. кодировок в Linux</title>
+</head>
+
+<body>
+
+<p align="center"><b><font size="4">Как использовать русскую, английскую и 
+исландскую кодировку в консоли Linux.</font></b></p>
+<p align="left">&nbsp;&nbsp;&nbsp; Приспособление персонального компьютера для 
+работы сразу с несколькими языками в некоторых случаях превращается в нетривиальную задачу. 
+Операционные системы семейства UNIX и примыкающий к ним Linux не являются 
+исключением. Надо сказать, что в современных дистрибутивах Линукса эта проблема 
+решена для графической системы XFree/Xorg, где пользователь может указать 
+различные кодировки и способ переключения между ними в главном конфигурационном 
+файле XF86Config/Xorg.conf или же воспользоваться стандартными средствами 
+KDE/GNOME. Но как быть, если хочется воспользоваться возможностями разных 
+кодировок при работе в консоли?</p>
+<p align="left">&nbsp;&nbsp;&nbsp; Ответ <span lang="ru">на этот вопрос</span> - 
+может быть вопреки <span lang="ru">тому, что читатель </span>ожидае<span lang="ru">т 
+от статьи с таким названием</span> - никак! <span lang="ru">Увы, к</span>онсоль 
+в Линуксе настроена только на одну кодировку (+ английская). <span lang="ru">Но если вот 
+приспичило работать в консоле и писать на нескольких языках (например, русском, 
+английском и исландском), то ваше положение всё-таки не такое безнадёжное, как может 
+показаться после такого вступления. Попробуем разобраться с этой проблемой в 
+дистрибутиве </span>Fedora Core 3.</p>
+<p align="left"><span lang="ru">&nbsp;&nbsp;&nbsp; Прежде всего убедимся, что 
+наша консоль русифицирована. Для этого достаточно открыть файл </span><font color="#800000">/etc/sysconfig/</font><font color="#000080">keyboard</font>
+<span lang="ru">и поменять строчку </span><font color="#800080" size="2" face="Lucida Console">KEYTABLE=&quot;us&quot;</font> <span lang="ru">на
+</span><font color="#800080" size="2" face="Lucida Console">KEYTABLE=&quot;ru&quot;</font><span lang="ru">.</span> <span lang="ru">Также стоит 
+заглянуть и в файл </span><font color="#800000">/etc/sysconfig/</font><font color="#000080">i18n</font><span lang="ru">, чтобы убедиться, 
+что в нём стоит юникодовская версия языка,
+напр. </span><font color="#800080" size="2" face="Lucida Console"><span class="sample">LANG=&quot;us_US.UTF-8&quot;</span></font><span lang="ru">.
+Если это так, то больше ничего трогать не
+надо, вообще этот файл касается не столько кодировки, сколько 
+локализации консоли, т.е. перевода служебных сообщений, формата даты и времени и 
+тп. с английского соответственно на русский, исландский и тд. (Переключение 
+между языками в консоли производится одновременным нажатием правых клавиш </span>
+CTRL+SHIFT <span lang="ru">или же так: для переключения на 1 язык нажатием 
+правой клавиши </span>CTRL<span lang="ru">, а для обратного переключения - 
+правой клавиши</span> ALT GR<span lang="ru"> или той же правой </span>CTRL.<span lang="ru">)&nbsp; 
+Вам необязательно менять язык локали на русский,
+принципиальна лишь юникодовская кодировка -
+я лично не люблю русифицированную локаль, т.к.
+она совершенно недоделана. </span></p>
+<p align="left"><span lang="ru">&nbsp;&nbsp;&nbsp; Пойдём дальше. Если мыслить логически, то 
+можно установить, что фактически мы можем пользоваться двумя кодовыми 
+страницами, если консоль настроена на русский язык - английской и русской, или 
+на исландский - английской и исландской. На самом деле, это уже пол-дела
+- осталось только инкорпорировать третий язык! Разумеется, это легче будет сделать 
+с исландским, который, как и английский, пользуется латинским алфавитом,
+но с добавлением 10 пар 
+собственных букв</span> - &THORN;&thorn;, &ETH;&eth;, &AElig;&aelig;, &Ouml;&ouml;, &Aacute;&aacute;, &Eacute;&eacute;, &Oacute;&oacute;, &Iacute;&iacute;, &Uacute;&uacute;, &Yacute;&yacute;.
+<span lang="ru">Именно эти символы нам надо как-то научиться печатать.
+(Очевидно, что в случае добавления русских
+букв к исландской кодировке нам пришлось бы
+добавить все 33 пары русских букв).</span></p>
+<p align="left"><span lang="ru">&nbsp;&nbsp;&nbsp; Как известно, консольный 
+драйвер клавиатуры использует т.наз. </span>keymaps, <span lang="ru">в которых 
+указаны соответствия клавиш (или их комбинаций) определённым символам. Эти файлы 
+лежат в папке </span><font color="#800000">/lib/kbd/keymaps/i386/qwerty<span lang="ru">/</span> </font> (<span lang="ru">в 
+других дистрибутивах эти файлы могут лежать в папке </span><font color="#800000">/usr/lib<span lang="ru">/</span>kbd/</font>...).<span lang="ru"> 
+За русский отвечает файл </span><font color="#000080">ru.map</font>, <span lang="ru">который может быть 
+заархивирован - </span><font color="#000080">ru.map.gz</font>.<span lang="ru"> Если мы его откроем, то можем увидеть такие записи:</span></p>
+<p align="left"><font color="#800080" size="2" face="Lucida Console">altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 23 = U+0448        # CYRILLIC SMALL LETTER SHA<br>
+altgr   shift&nbsp;&nbsp; keycode 23 = U+0428        # CYRILLIC CAPITAL LETTER SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 24 = +o<br>
+        shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 24 = +O<br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 24 = U+0449        # CYRILLIC SMALL LETTER SHCHA<br>
+altgr   shift&nbsp;&nbsp; keycode 24 = U+0429        # CYRILLIC CAPITAL LETTER SHCHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 25 = +p<br>
+        shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 25 = +P<br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 25 = U+0437        # CYRILLIC SMALL LETTER ZE<br>
+altgr   shift&nbsp;&nbsp; keycode 25 = U+0417        # CYRILLIC CAPITAL LETTER ZE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 26 = bracketleft<br>
+        shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 26 = braceleft<br>
+        alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 26 = Meta_bracketleft<br>
+        control&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 26 = Escape&nbsp;<br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 26 = U+0445        # CYRILLIC SMALL LETTER HA<br>
+altgr   shift&nbsp;&nbsp; keycode 26 = U+0425        # CYRILLIC CAPITAL LETTER HA<br>
+altgr   alt&nbsp;&nbsp;&nbsp;&nbsp; keycode 26 = Meta_bracketleft<br>
+altgr   control         keycode 26 = Escape&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 27 = bracketright<br>
+        shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 27 = braceright<br>
+        alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 27 = Meta_bracketright<br>
+        control&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 27 = Control_bracketright<br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 27 = U+044A        # CYRILLIC SMALL LETTER HARD SIGN<br>
+altgr   shift&nbsp;&nbsp; keycode 27 = U+042A        # CYRILLIC CAPITAL LETTER HARD SIGN<br>
+altgr   alt&nbsp;&nbsp;&nbsp;&nbsp; keycode 27 = Meta_bracketright<br>
+altgr   control keycode 27 = Control_bracketright</font></p>
+<p align="left"><span lang="ru">&nbsp;&nbsp;&nbsp; В первом
+столбце стоят дополнительные клавиши,
+используемые при нажатии вместе с основной.
+</span><font color="#800080" size="2" face="Lucida Console">altgr</font><span lang="ru">
+означает вариант при переключении
+клавиатуры. Далее идёт код основной клавиши.
+После знака &quot;</span><font color="#800080" size="2" face="Lucida Console">=</font><span lang="ru">&quot;
+указывается символ, который может быть
+выражен буквально (</span><font color="#800080" size="2" face="Lucida Console">+p</font><span lang="ru">
+означает строчную латинскую букву 'p', </span><font color="#800080" size="2" face="Lucida Console">+P</font><span lang="ru">
+- 'P', </span><font color="#800080" size="2" face="Lucida Console"> bracketleft</font><span lang="ru">
+- открывающую квадратную скобку и тд.) или по
+юникодовскому коду - если речь идёт о
+русских буквах, напр. </span><font color="#800080" size="2" face="Lucida Console"> U+0445</font><span lang="ru">
+для русской строчной 'х' (подробнее см. коды
+на <a href="http://www.unicode.org/Public/UNIDATA/UnicodeData.txt">http://www.unicode.org/Public/UNIDATA/UnicodeData.txt</a>).
+Итак, нам надо найти неиспользуемые
+комбинации клавиш и присвоить им столь
+нужные нам буквы исландского алфавита. Мы
+будем использовать их именованные
+обозначения, благо они известны:&nbsp;</span></p>
+<p align="left"><span lang="ru">&thorn;/&THORN; - +thorn/+THORN;<br>
+&eth;/D - +eth/+ETH;<br>
+&aelig;/&AElig; - +ae/+AE;<br>
+&ouml;/&Ouml; - +odiaeresis/+Odiaeresis;<br>
+&aacute;/&Aacute; - +aacute/+Aacute;<br>
+&oacute;/&Oacute; - +oacute/+Oacute;<br>
+&uacute;/&Uacute; - +uacute/+Uacute;<br>
+&yacute;/&Yacute; - +yacute/+Yacute;<br>
+&iacute;/&Iacute; - +iacute/+Iacute;<br>
+&eacute;/&Eacute; - +eacute/+Eacute;</span></p>
+<p align="left">&nbsp;&nbsp;&nbsp; Нам осталось лишь найти,
+куда вставить эти коды букв. К сожалению,
+клавиши, которые используются для ряда этих
+букв в исландской раскладке, уже не имеют
+свободных мест. Более того, мне не
+получилось &quot;научить&quot; консоль
+воспринимать т.наз. &quot;dead acute&quot;, когда
+буквы с акутом набираются при помощи
+нажатия клавиши акута и последующего
+нажатия клавиши соответствующей гласной (в
+результате чего эта гласная появляется со
+значком акута), т.е. &aacute; = &acute; - a. Мы присвоим
+все гласные с акутом соответствующим
+гласным клавишам. &THORN;/&thorn; мы присвоим
+клавише t, &ETH;,&eth; - d, а оставшиеся буквы
+пристроим без оглядки на фонетическое
+сходство: &Ouml;/&ouml; к q, а &AElig;/&aelig; - к w.
+Разумеется, коды этих букв мы припишем
+латинской половине keymap'а. Кроме того,
+строчная буква будет выводиться при помощи
+дополнительной клавиши CTRL, а заглавная - ALT.
+В итоге мы внесём следующие изменения в
+файл <font color="#000080">ru.map</font>:</p>
+<p align="left"><font color="#800080" size="2" face="Lucida Console">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 16 = +q<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 16 = +Q<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 16 = +odiaeresis<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 16 = +Odiaeresis</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 16 = U+0439 #
+CYRILLIC SMALL LETTER SHORT I<br>
+altgr shift&nbsp;&nbsp; keycode 16 = U+0419 # CYRILLIC CAPITAL LETTER SHORT I<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 17 = +w<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 17 = +W<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 17 = +ae<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 17 = +AE</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 17 = U+0446 #
+CYRILLIC SMALL LETTER TSE<br>
+altgr shift&nbsp;&nbsp; keycode 17 = U+0426 # CYRILLIC CAPITAL LETTER TSE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 18 = +e<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 18 = +E<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 18 = +eacute<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 18 = +Eacute</b></font><font color="#800080" size="2" face="Lucida Console"><br>
+</font><font color="#800080" size="2" face="Lucida Console">&lt;...&gt;<br>
+</font><font color="#800080" size="2" face="Lucida Console">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 20 = +t<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 20 = +T<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 20 = +thorn<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 20 = +THORN</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 20 = U+0435 #
+CYRILLIC SMALL LETTER IE<br>
+altgr shift&nbsp;&nbsp; keycode 20 = U+0415 # CYRILLIC CAPITAL LETTER IE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 21 = +y<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 21 = +Y<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 21 = +yacute<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 21 = +Yacute</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 21 = U+043D #
+CYRILLIC SMALL LETTER EN<br>
+altgr shift&nbsp;&nbsp; keycode 21 = U+041D # CYRILLIC CAPITAL LETTER EN<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 22 = +u<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 22 = +U<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 22 = +uacute<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 22 = +Uacute</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 22 = U+0433 #
+CYRILLIC SMALL LETTER GHE<br>
+altgr shift&nbsp;&nbsp; keycode 22 = U+0413 # CYRILLIC CAPITAL LETTER GHE<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 23 = +i<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 23 = +I<br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 23 = +iacute<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 23 = +Iacute</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 23 = U+0448 #
+CYRILLIC SMALL LETTER SHA<br>
+altgr shift&nbsp;&nbsp; keycode 23 = U+0428 # CYRILLIC CAPITAL LETTER SHA</font><font color="#800080" size="2" face="Lucida Console"><br>
+&lt;...&gt;</font><font color="#800080" size="2" face="Lucida Console"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+keycode 24 = +o<br>
+shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 24 = +O</font><font color="#800080" size="2" face="Lucida Console"><br>
+<b>control&nbsp;&nbsp;&nbsp;&nbsp; keycode 24 = +oacute<br>
+alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 24 = +Oacute</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 30 = +a<br>
+        shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 30 = +A<br>
+<b>	control&nbsp;&nbsp;&nbsp;&nbsp; keycode 30 = +aacute<br>
+	alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 30 = +Aacute</b><br>
+altgr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 30 = U+0444        # CYRILLIC SMALL LETTER EF<br>
+altgr   shift&nbsp;&nbsp; keycode 30 = U+0424        # CYRILLIC CAPITAL LETTER EF<br>
+&lt;...&gt;</font><font color="#800080" size="2" face="Lucida Console"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 32 = +d<br>
+        shift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 32 = +D<br>
+<b>	control&nbsp;&nbsp;&nbsp;&nbsp; keycode 32 = +eth<br>
+	alt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; keycode 32 = +ETH</b></font></p>
+<p align="left">&nbsp;&nbsp;&nbsp; Жирным выделены
+добавленные нами строки. Для
+редактирования файла ru.map рекомендую
+использовать Midnight Commander - клавиша F4
+позволяет редактировать даже
+заархивированный файл. Потом вам останется
+только перезагрузиться и начать
+наслаждаться триязычием вашей консоли. Для
+особо ленивых аттачу исправленную
+вышеописанным способом копию файла <a href="ru.map.gz">ru.map.gz</a>.</p>
+</body>
+
+</html>
+
